@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, ShoppingCart } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { createSale } from '@/hooks/useDashboardData';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -37,25 +37,15 @@ export function NewSaleDialog() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!isSupabaseConfigured()) {
-      toast.error('Configure o Supabase primeiro nas variáveis de ambiente.');
-      return;
-    }
-
     setIsLoading(true);
     try {
-      if (!supabase) {
-        throw new Error('Supabase não configurado');
-      }
-      const { error } = await supabase.from('vendas').insert({
+      await createSale({
         produto_nome: formData.produto_nome,
         quantidade: formData.quantidade,
         valor_total: parseFloat(formData.valor_total.replace(',', '.')),
         cliente_nome: formData.cliente_nome || null,
         forma_pagamento: formData.forma_pagamento,
       });
-
-      if (error) throw error;
 
       toast.success('Venda registrada com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['vendas'] });

@@ -105,7 +105,7 @@ export function AIInsights({ stats, isLoading }: AIInsightsProps) {
         ) : (
           <div className="text-center py-8 text-muted-foreground">
             <Lightbulb className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p className="text-lg">Configure o Supabase para ver insights do seu negócio.</p>
+            <p className="text-lg">Carregando insights do seu negócio...</p>
           </div>
         )}
       </CardContent>

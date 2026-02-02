@@ -1,24 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Venda, Despesa, DashboardStats } from '@/types/database';
+
+const callExternalDb = async (action: string, payload?: unknown) => {
+  const { data, error } = await supabase.functions.invoke('external-db', {
+    body: { action, payload },
+  });
+
+  if (error) throw error;
+  return data;
+};
 
 export const useSales = () => {
   return useQuery({
     queryKey: ['vendas'],
     queryFn: async () => {
-      if (!isSupabaseConfigured() || !supabase) {
-        return [];
-      }
-      const { data, error } = await supabase
-        .from('vendas')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
-      
-      if (error) throw error;
+      const data = await callExternalDb('get-sales');
       return (data || []) as Venda[];
     },
-    enabled: isSupabaseConfigured(),
   });
 };
 
@@ -26,18 +25,9 @@ export const useExpenses = () => {
   return useQuery({
     queryKey: ['despesas'],
     queryFn: async () => {
-      if (!isSupabaseConfigured() || !supabase) {
-        return [];
-      }
-      const { data, error } = await supabase
-        .from('despesas')
-        .select('*')
-        .order('data_vencimento', { ascending: true });
-      
-      if (error) throw error;
+      const data = await callExternalDb('get-expenses');
       return (data || []) as Despesa[];
     },
-    enabled: isSupabaseConfigured(),
   });
 };
 
@@ -45,43 +35,18 @@ export const useDashboardStats = () => {
   return useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async (): Promise<DashboardStats> => {
-      if (!isSupabaseConfigured() || !supabase) {
-        return {
-          vendasHoje: 0,
-          lucroEstimado: 0,
-          contasAPagar: 0,
-          contasVencendo: 0,
-        };
-      }
-
-      const today = new Date().toISOString().split('T')[0];
-      const tomorrow = new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0];
-
-      // Vendas de hoje
-      const { data: vendasHoje } = await supabase
-        .from('vendas')
-        .select('valor_total')
-        .gte('created_at', today);
-
-      // Total de despesas não pagas
-      const { data: despesasNaoPagas } = await supabase
-        .from('despesas')
-        .select('valor, data_vencimento')
-        .eq('pago', false);
-
-      const totalVendasHoje = vendasHoje?.reduce((acc, v) => acc + (v.valor_total || 0), 0) || 0;
-      const totalDespesas = despesasNaoPagas?.reduce((acc, d) => acc + (d.valor || 0), 0) || 0;
-      const contasVencendo = despesasNaoPagas?.filter(d => 
-        d.data_vencimento && d.data_vencimento <= tomorrow
-      ).length || 0;
-
-      return {
-        vendasHoje: totalVendasHoje,
-        lucroEstimado: totalVendasHoje - totalDespesas,
-        contasAPagar: totalDespesas,
-        contasVencendo,
-      };
+      const data = await callExternalDb('get-stats');
+      return data as DashboardStats;
     },
-    enabled: isSupabaseConfigured(),
   });
+};
+
+export const createSale = async (saleData: {
+  produto_nome: string;
+  quantidade: number;
+  valor_total: number;
+  cliente_nome: string | null;
+  forma_pagamento: string;
+}) => {
+  return callExternalDb('create-sale', saleData);
 };

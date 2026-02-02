@@ -44,6 +44,9 @@ export function NewSaleDialog() {
 
     setIsLoading(true);
     try {
+      if (!supabase) {
+        throw new Error('Supabase não configurado');
+      }
       const { error } = await supabase.from('vendas').insert({
         produto_nome: formData.produto_nome,
         quantidade: formData.quantidade,

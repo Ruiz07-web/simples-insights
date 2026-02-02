@@ -6,7 +6,7 @@ export const useSales = () => {
   return useQuery({
     queryKey: ['vendas'],
     queryFn: async () => {
-      if (!isSupabaseConfigured()) {
+      if (!isSupabaseConfigured() || !supabase) {
         return [];
       }
       const { data, error } = await supabase
@@ -26,7 +26,7 @@ export const useExpenses = () => {
   return useQuery({
     queryKey: ['despesas'],
     queryFn: async () => {
-      if (!isSupabaseConfigured()) {
+      if (!isSupabaseConfigured() || !supabase) {
         return [];
       }
       const { data, error } = await supabase
@@ -45,7 +45,7 @@ export const useDashboardStats = () => {
   return useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: async (): Promise<DashboardStats> => {
-      if (!isSupabaseConfigured()) {
+      if (!isSupabaseConfigured() || !supabase) {
         return {
           vendasHoje: 0,
           lucroEstimado: 0,

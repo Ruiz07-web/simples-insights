@@ -1,20 +1,20 @@
 export interface Venda {
   id: string;
-  created_at: string;
-  produto_id?: string;
-  produto_nome?: string;
+  data_venda: string;
+  produto_id?: string | null;
   quantidade: number;
   valor_total: number;
-  cliente_nome?: string;
-  forma_pagamento?: string;
+  metodo_pagamento?: string | null;
 }
 
 export interface Produto {
   id: string;
   nome: string;
-  preco: number;
-  estoque?: number;
-  categoria?: string;
+  preco_venda: number;
+  custo_unitario?: number | null;
+  estoque_atual?: number | null;
+  categoria_id?: string | null;
+  created_at: string;
 }
 
 export interface Despesa {
@@ -22,9 +22,9 @@ export interface Despesa {
   created_at: string;
   descricao: string;
   valor: number;
-  data_vencimento?: string;
-  pago?: boolean;
-  categoria?: string;
+  data_vencimento: string;
+  pago?: boolean | null;
+  categoria?: string | null;
 }
 
 export interface DashboardStats {

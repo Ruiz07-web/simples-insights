@@ -11,7 +11,8 @@ interface SalesListProps {
 }
 
 export function SalesList({ sales, isLoading }: SalesListProps) {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '—';
     try {
       return format(new Date(dateString), "dd 'de' MMM, HH:mm", { locale: ptBR });
     } catch {
@@ -47,22 +48,17 @@ export function SalesList({ sales, isLoading }: SalesListProps) {
                   <div className="flex items-start justify-between">
                     <div className="space-y-1">
                       <p className="font-semibold text-foreground">
-                        {sale.produto_nome || `Venda #${sale.id.slice(0, 8)}`}
+                        {`Venda #${sale.id.slice(0, 8)}`}
                       </p>
-                      {sale.cliente_nome && (
-                        <p className="text-sm text-muted-foreground">
-                          Cliente: {sale.cliente_nome}
-                        </p>
-                      )}
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
-                          {formatDate(sale.created_at)}
+                          {formatDate(sale.data_venda)}
                         </span>
-                        {sale.forma_pagamento && (
+                        {sale.metodo_pagamento && (
                           <span className="flex items-center gap-1">
                             <CreditCard className="h-3 w-3" />
-                            {sale.forma_pagamento}
+                            {sale.metodo_pagamento}
                           </span>
                         )}
                       </div>

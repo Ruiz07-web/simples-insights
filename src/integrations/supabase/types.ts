@@ -14,7 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      categorias: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      despesas: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          data_vencimento: string
+          descricao: string
+          id: string
+          pago: boolean | null
+          valor: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          data_vencimento: string
+          descricao: string
+          id?: string
+          pago?: boolean | null
+          valor: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          data_vencimento?: string
+          descricao?: string
+          id?: string
+          pago?: boolean | null
+          valor?: number
+        }
+        Relationships: []
+      }
+      insights_ia: {
+        Row: {
+          created_at: string
+          id: string
+          lido: boolean | null
+          mensagem: string
+          titulo: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lido?: boolean | null
+          mensagem: string
+          titulo?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lido?: boolean | null
+          mensagem?: string
+          titulo?: string | null
+        }
+        Relationships: []
+      }
+      produtos: {
+        Row: {
+          categoria_id: string | null
+          created_at: string
+          custo_unitario: number | null
+          estoque_atual: number | null
+          id: string
+          nome: string
+          preco_venda: number
+        }
+        Insert: {
+          categoria_id?: string | null
+          created_at?: string
+          custo_unitario?: number | null
+          estoque_atual?: number | null
+          id?: string
+          nome: string
+          preco_venda: number
+        }
+        Update: {
+          categoria_id?: string | null
+          created_at?: string
+          custo_unitario?: number | null
+          estoque_atual?: number | null
+          id?: string
+          nome?: string
+          preco_venda?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produtos_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendas: {
+        Row: {
+          data_venda: string
+          id: string
+          metodo_pagamento: string | null
+          produto_id: string | null
+          quantidade: number
+          valor_total: number
+        }
+        Insert: {
+          data_venda?: string
+          id?: string
+          metodo_pagamento?: string | null
+          produto_id?: string | null
+          quantidade: number
+          valor_total: number
+        }
+        Update: {
+          data_venda?: string
+          id?: string
+          metodo_pagamento?: string | null
+          produto_id?: string | null
+          quantidade?: number
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendas_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

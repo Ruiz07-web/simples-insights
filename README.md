@@ -7,7 +7,7 @@ Painel inteligente de gestão financeira — vendas, despesas, produtos e insigh
 - **Vite** + **React** + **TypeScript**
 - **Tailwind CSS** + **shadcn/ui**
 - **Supabase** (banco de dados, edge functions)
-- **Recharts** (gráficos)
+- **Recharts** (gráficoss)
 
 ## Como rodar localmente
 
@@ -31,7 +31,7 @@ npm run dev
 
 ## Estrutura do banco (Supabase)
 
-| Tabela | Descrição |
+| Tabela | Descrição |xxxx
 |---|---|
 | `categorias` | Categorias de produtos |
 | `produtos` | Catálogo com preço e estoque |
